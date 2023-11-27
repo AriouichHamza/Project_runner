@@ -37,6 +37,7 @@ public class GameScene extends Scene {
             this.panel.getChildren().add(heart_img);
             this.hearts.add(heart_img);
         }
+
     }
 
     public void removeHeart(){
@@ -48,7 +49,6 @@ public class GameScene extends Scene {
     public void render(){
         double cameraX = camera.getX();
         double width = backgroundLeft.getImageView().getFitWidth();
-        double height = backgroundLeft.getImageView().getFitHeight();
         double leftBackgroundX =  - cameraX % width;
         double rightBackgroundX =  width + leftBackgroundX ;
         backgroundLeft.getImageView().setX(leftBackgroundX);
@@ -56,9 +56,6 @@ public class GameScene extends Scene {
 
         backgroundRight.getImageView().setX(rightBackgroundX);
         backgroundRight.getImageView().setY(0);
-        if (this.numberOfLives > 1){
-            removeHeart();
-        }
     }
     public void setWidth(double width){
         backgroundLeft.getImageView().setFitWidth(width);
@@ -68,6 +65,14 @@ public class GameScene extends Scene {
         backgroundLeft.getImageView().setFitHeight(height);
         backgroundRight.getImageView().setFitHeight(height);
     }
+
+
+
+
+
+
+
+
 
 }
 

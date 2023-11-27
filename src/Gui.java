@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 public class Gui extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("Hamza's Game");
 
         Group root = new Group();
         Pane pane = new Pane(root);
