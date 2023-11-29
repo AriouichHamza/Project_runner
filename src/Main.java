@@ -16,6 +16,8 @@ public class Main extends Application {
 
     private Hero hero;
     private Zombie zombie;
+    
+    private Timeline timeline_hero;
 
 
     @Override
@@ -41,13 +43,13 @@ public class Main extends Application {
         pane.getChildren().add(hero.getSpriteSheet());
         primaryStage.setScene(gameScene);
         primaryStage.setResizable(true);
-        Timeline timeline2 = new Timeline (new KeyFrame(Duration.millis(200), event -> updateHero()));
-        timeline2.setCycleCount(Timeline.INDEFINITE); // Exécutez en boucle
-        timeline2.play();
+        timeline_hero = new Timeline (new KeyFrame(Duration.millis(200), event -> updateHero()));
+        timeline_hero.setCycleCount(Timeline.INDEFINITE); // Exécutez en boucle
+        timeline_hero.play();
 
 
        
-       Zombie zombie = new Zombie(width*0.8, height * 0.6, height,  width, 0,4);
+       Zombie zombie = new Zombie(width*0.8, height * 0.65, height,  width, 0,4);
        this.zombie = zombie;
        gameScene.render();
        pane.getChildren().add(zombie.getSpriteSheet());
@@ -59,9 +61,8 @@ public class Main extends Application {
        primaryStage.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
            @Override
            public void handle(MouseEvent mouseEvent) {
-               hero.setAttitude(1);
-               updateHero();
-               hero.jump();
+               hero.jump(timeline_hero);
+
            }
        });
 
@@ -83,6 +84,7 @@ public class Main extends Application {
             }
 
 
+
        });
         primaryStage.show();
     }
@@ -94,8 +96,18 @@ public class Main extends Application {
         // Mettez à jour la position de la caméra
         camera.setX(camera.getX() + 1);
 
-        // Rendez la scène avec la nouvelle position de la caméra
+
         gameScene.render();
+        if (!hero.getDying() & (Math.abs(hero.getX() - zombie.getX()) < 15) & ((hero.getY() - zombie.getY())> - 0.6 ))
+        {
+            gameScene.removeHeart();
+            hero.killed(timeline_hero);
+        }
+
+        if (gameScene.getNumberOfLives() == 0)
+        {
+            System.exit(0);
+        }
     }
 
 

@@ -16,14 +16,15 @@ public abstract class AnimatedThing {
     protected final int windowSizeX;
     protected final int windowSizeY;
     protected final int offsetBetweenFrames;
-    private double x;
-    private double y;
+    protected double x;
+    protected double y;
 
-    private double width;
-    private double height;
-    private double ratio_w;
-    private double ratio_h;
+    protected double width;
+    protected double height;
+    protected double ratio_w;
+    protected double ratio_h;
 
+    private boolean jumping = false;
     // Constructor
     public AnimatedThing(double x, double y, double height, double width, int attitude, String fileName, int index, int durationBetweenFrames,
                          int maxIndex, int windowSizeX, int windowSizeY, int offsetBetweenFrames) {
@@ -104,43 +105,58 @@ public abstract class AnimatedThing {
         this.x = x;
     }
 
-    public void jump(){
+    public void jump(Timeline timeline_hero){
+        if (jumping)
+            return;
+        jumping = true;
+        // pause timeline_hero
+        timeline_hero.pause();
+
         double acc = 0.2;
         attitude = 1;
+        maxIndex = 2;
+        index = 0;
         y = spriteSheet.getY();
+
         // Jump animation
         Timeline jumpTimeline = new Timeline();
         jumpTimeline.setCycleCount(5); // Number of iterations
         jumpTimeline.getKeyFrames().add(
-                new KeyFrame(Duration.millis(100),
+                new KeyFrame(Duration.millis(80),
                         event ->
                         {
-                            y -= (0.5 * height * ratio_h) * acc;
+                            y -= (0.42 * height * ratio_h) * acc;
                             spriteSheet.setY(y);
+                            spriteSheet.setViewport(createViewport(index, attitude, maxIndex));
                         }
                 )
         );
         Timeline gravityTimeline = new Timeline();
-        gravityTimeline.setCycleCount(5); // Number of iterations
+        gravityTimeline.setCycleCount(10); // Number of iterations
         gravityTimeline.getKeyFrames().add(
-                new KeyFrame(Duration.millis(200),
+                new KeyFrame(Duration.millis(120),
                         event ->
                         {
-                            y += (0.5 * height * ratio_h) * acc;
+                            y += (0.21 * height * ratio_h) * acc;
                             spriteSheet.setY(y);
+                            spriteSheet.setViewport(createViewport(index + 1, attitude, maxIndex));
                         }
                 )
         );
         jumpTimeline.setOnFinished(e -> {
-                                            gravityTimeline.setOnFinished(event -> attitude = 0);
+                                            gravityTimeline.setOnFinished(event -> {attitude = 0;
+                                                                                    timeline_hero.play();
+                                                                                    jumping = false;
+                                                                                    });
                                             gravityTimeline.play();
                                         }); // Trigger gravityTimeline after jumpTimeline finishes
+
         jumpTimeline.play();
 
     }
     public void running(){
         Timeline runningTimeline = new Timeline();
-        runningTimeline.setCycleCount(10); // Exécutez en boucle
+        runningTimeline.setCycleCount(Timeline.INDEFINITE); // Exécutez en boucle
         runningTimeline.getKeyFrames().add(
                 new KeyFrame(Duration.millis(durationBetweenFrames),
                         event ->

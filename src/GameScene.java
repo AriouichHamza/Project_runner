@@ -1,7 +1,7 @@
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +12,7 @@ public class GameScene extends Scene {
     private int numberOfLives;
     private List<ImageView> hearts;
     private final Pane panel;
+    private List<ImageView> zombies;
 
     public GameScene(Pane panel, double width, double height, Camera camera) {
         super(panel, width, height);
@@ -21,8 +22,12 @@ public class GameScene extends Scene {
         this.numberOfLives = 3;
         this.panel = panel;
         this.hearts = new ArrayList<>();
+        this.zombies = new ArrayList<>();
+        Random rand = new Random();
+        int numZombies = rand.nextInt(3) + 3;
+        double x = 0;
 
-        this.panel.getChildren().addAll(
+            this.panel.getChildren().addAll(
                                 backgroundLeft.getImageView(),
                                 backgroundRight.getImageView());
 
@@ -38,7 +43,9 @@ public class GameScene extends Scene {
             this.hearts.add(heart_img);
         }
 
+
     }
+
 
     public void removeHeart(){
         int lastIndex = hearts.size() - 1;
@@ -65,12 +72,9 @@ public class GameScene extends Scene {
         backgroundLeft.getImageView().setFitHeight(height);
         backgroundRight.getImageView().setFitHeight(height);
     }
-
-
-
-
-
-
+    public int getNumberOfLives() {
+        return numberOfLives;
+    }
 
 
 
